@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G'day! Aussie Countdown</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #00CED1 30%, #F4D03F 70%, #E07830 100%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: clamp(3rem, 12vw, 6rem);
+            color: #fff;
+            text-shadow: 4px 4px 0 #CD5C5C, 6px 6px 0 rgba(0,0,0,0.2);
+            letter-spacing: 0.05em;
+        }
+
+        .header .subtitle {
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            color: #fff;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            margin-top: 10px;
+        }
+
+        .countdown {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .time-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px 25px;
+            min-width: 100px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2), inset 0 -5px 0 rgba(0,0,0,0.1);
+            transform: rotate(-2deg);
+        }
+
+        .time-box:nth-child(2) { transform: rotate(1deg); }
+        .time-box:nth-child(3) { transform: rotate(-1deg); }
+        .time-box:nth-child(4) { transform: rotate(2deg); }
+
+        .time-box .number {
+            font-size: clamp(2.5rem, 10vw, 5rem);
+            font-weight: bold;
+            color: #E07830;
+            line-height: 1;
+        }
+
+        .time-box .label {
+            font-size: clamp(0.8rem, 3vw, 1.2rem);
+            color: #666;
+            text-transform: uppercase;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .progress-section {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+        }
+
+        .progress-bar {
+            height: 40px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: inset 0 3px 10px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00CED1, #F4D03F, #E07830, #CD5C5C);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+            border-radius: 25px;
+            transition: width 1s ease-out;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+
+        /* Bouncing emojis - TOP ZONE */
+        .bouncer {
+            position: fixed;
+            z-index: 5;
+            animation: bounce 1s ease-in-out infinite;
+            filter: drop-shadow(3px 3px 4px rgba(0,0,0,0.4));
+        }
+
+        .top-1 {
+            top: 2%;
+            left: 8%;
+            font-size: 4rem;
+            animation-duration: 0.85s;
+        }
+
+        .top-2 {
+            top: 8%;
+            left: 28%;
+            font-size: 3.5rem;
+            animation-duration: 1s;
+            animation-delay: 0.3s;
+        }
+
+        .top-3 {
+            top: 4%;
+            left: 52%;
+            font-size: 3.8rem;
+            animation-duration: 0.9s;
+            animation-delay: 0.5s;
+        }
+
+        .top-4 {
+            top: 10%;
+            right: 22%;
+            font-size: 3.5rem;
+            animation-duration: 0.95s;
+            animation-delay: 0.2s;
+        }
+
+        .top-5 {
+            top: 3%;
+            right: 6%;
+            font-size: 4rem;
+            animation-duration: 0.88s;
+            animation-delay: 0.7s;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0) rotate(-5deg);
+            }
+            50% {
+                transform: translateY(-25px) rotate(5deg);
+            }
+        }
+
+        /* Floating emojis - BOTTOM ZONE */
+        .floater {
+            position: fixed;
+            z-index: 3;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .bottom-1 {
+            bottom: 3%;
+            left: 6%;
+            font-size: 3.5rem;
+            animation-delay: 0.5s;
+        }
+
+        .bottom-2 {
+            bottom: 10%;
+            left: 24%;
+            font-size: 3.2rem;
+            animation-delay: 1.2s;
+        }
+
+        .bottom-3 {
+            bottom: 4%;
+            left: 48%;
+            font-size: 3.8rem;
+            animation-delay: 0.8s;
+        }
+
+        .bottom-4 {
+            bottom: 12%;
+            right: 20%;
+            font-size: 3.2rem;
+            animation-delay: 1.5s;
+        }
+
+        .bottom-5 {
+            bottom: 5%;
+            right: 4%;
+            font-size: 3.5rem;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-15px) rotate(10deg);
+            }
+        }
+
+        /* Hopping kangaroo across screen - HUGE! */
+        .hopping-roo {
+            position: fixed;
+            bottom: 5%;
+            font-size: 6rem;
+            z-index: 6;
+            animation: hop-across 12s linear infinite;
+            filter: drop-shadow(4px 4px 5px rgba(0,0,0,0.4));
+        }
+
+        @keyframes hop-across {
+            0% {
+                left: -10%;
+                transform: translateY(0) scaleX(-1);
+            }
+            5% {
+                transform: translateY(-50px) scaleX(-1);
+            }
+            10% {
+                transform: translateY(0) scaleX(-1);
+            }
+            15% {
+                transform: translateY(-50px) scaleX(-1);
+            }
+            20% {
+                transform: translateY(0) scaleX(-1);
+            }
+            25% {
+                transform: translateY(-50px) scaleX(-1);
+            }
+            30% {
+                transform: translateY(0) scaleX(-1);
+            }
+            35% {
+                transform: translateY(-50px) scaleX(-1);
+            }
+            40% {
+                transform: translateY(0) scaleX(-1);
+            }
+            45% {
+                transform: translateY(-50px) scaleX(-1);
+            }
+            50% {
+                left: 110%;
+                transform: translateY(0) scaleX(-1);
+            }
+            50.01% {
+                left: 110%;
+                transform: translateY(0) scaleX(1);
+            }
+            55% {
+                transform: translateY(-50px) scaleX(1);
+            }
+            60% {
+                transform: translateY(0) scaleX(1);
+            }
+            65% {
+                transform: translateY(-50px) scaleX(1);
+            }
+            70% {
+                transform: translateY(0) scaleX(1);
+            }
+            75% {
+                transform: translateY(-50px) scaleX(1);
+            }
+            80% {
+                transform: translateY(0) scaleX(1);
+            }
+            85% {
+                transform: translateY(-50px) scaleX(1);
+            }
+            90% {
+                transform: translateY(0) scaleX(1);
+            }
+            95% {
+                transform: translateY(-50px) scaleX(1);
+            }
+            100% {
+                left: -10%;
+                transform: translateY(0) scaleX(1);
+            }
+        }
+
+
+        /* Completed state */
+        .completed .header h1 {
+            font-size: clamp(2.5rem, 10vw, 5rem);
+        }
+
+        .completed .celebration {
+            font-size: clamp(4rem, 15vw, 8rem);
+            animation: celebrate 0.5s ease-in-out infinite;
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(-5deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        @media (max-width: 480px) {
+            .time-box {
+                min-width: 80px;
+                padding: 15px 18px;
+            }
+
+            .bouncer, .floater {
+                font-size: 2.5rem !important;
+            }
+
+            .hopping-roo {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Bouncing emojis - TOP -->
+    <div class="bouncer top-1"></div>
+    <div class="bouncer top-2"></div>
+    <div class="bouncer top-3"></div>
+    <div class="bouncer top-4"></div>
+    <div class="bouncer top-5"></div>
+
+    <!-- Floating emojis - BOTTOM -->
+    <div class="floater bottom-1"></div>
+    <div class="floater bottom-2"></div>
+    <div class="floater bottom-3"></div>
+    <div class="floater bottom-4"></div>
+    <div class="floater bottom-5"></div>
+
+    <!-- Hopping kangaroo across screen -->
+    <div class="hopping-roo">🦘</div>
+
+    <div class="container" id="main-container">
+        <div class="header">
+            <h1>G'DAY MATE!</h1>
+            <p class="subtitle" id="subtitle">The oldies are comin' down under!</p>
+        </div>
+
+        <div class="countdown" id="countdown">
+            <div class="time-box">
+                <div class="number" id="days">--</div>
+                <div class="label">Days</div>
+            </div>
+            <div class="time-box">
+                <div class="number" id="hours">--</div>
+                <div class="label">Hours</div>
+            </div>
+            <div class="time-box">
+                <div class="number" id="minutes">--</div>
+                <div class="label">Mins</div>
+            </div>
+            <div class="time-box">
+                <div class="number" id="seconds">--</div>
+                <div class="label">Secs</div>
+            </div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-labels">
+                <span>1 JAN 2026</span>
+                <span>23 FEB 2026</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Target date: 23rd February 2026, midnight UK time
+        const startDate = new Date('2026-01-01T00:00:00');
+        const targetDate = new Date('2026-02-23T00:00:00');
+        const totalDuration = targetDate - startDate;
+
+        // Random Aussie sayings for each time range
+        const sayings = {
+            over30: [
+                "Fair dinkum, still a while to go! 🦘🇦🇺",
+                "No wukkas, plenty of time yet! 🐨🌴",
+                "She'll be right, mate! Long way off! 🏖️☀️",
+                "Heaps of time to get the snags ready! 🍺🦘",
+                "Don't get your knickers in a knot yet! 🇦🇺🐊"
+            ],
+            over14: [
+                "Strewth! Getting closer! 🦘🇦🇺",
+                "Too easy! Won't be long now! 🐨🍺",
+                "Rippa! The countdown's heating up! ☀️🏄",
+                "Bloody oath, it's nearly time! 🦈🌴",
+                "Hooroo boredom, G'day excitement! 🎉🦘"
+            ],
+            over7: [
+                "Crikey! Nearly there mate! 🦘🇦🇺",
+                "Stone the crows, so close! 🐨🎉",
+                "You little ripper! Almost time! 🍺🏖️",
+                "Deadset legend countdown! 🦈☀️",
+                "Rack off boredom, the oldies are coming! 🌴🇦🇺"
+            ],
+            over1: [
+                "Bonzer! Just days away! 🦘🇦🇺",
+                "Chockers with excitement! 🎉🐨",
+                "Spit the dummy, it's nearly here! 🍺🦘",
+                "Full as a goog with anticipation! ☀️🇦🇺",
+                "Flat out like a lizard drinkin'! 🦎🏖️"
+            ],
+            tomorrow: [
+                "Stone the crows! TOMORROW! 🦘🇦🇺🎉",
+                "Strewth! They're almost here! 🐨🎉🍺",
+                "Crikey mate! ONE MORE SLEEP! 🛏️🦘🇦🇺",
+                "Fair dinkum EXCITED! 🎉☀️🏄",
+                "Bloody hell, it's happening! 🇦🇺🦘🐊"
+            ]
+        };
+
+        function getRandomSaying(category) {
+            const options = sayings[category];
+            return options[Math.floor(Math.random() * options.length)];
+        }
+
+        // Pool of Aussie emojis to randomly pick from
+        const emojiPool = ['🦘', '🐨', '🇦🇺', '🏖️', '🦈', '🐊', '🍺', '🌴', '☀️', '🏄', '🦜', '🪰', '🪼', '🐙'];
+
+        // Randomize emojis on page load
+        function randomizeEmojis() {
+            const bouncers = document.querySelectorAll('.bouncer');
+            const floaters = document.querySelectorAll('.floater');
+            const allSlots = [...bouncers, ...floaters];
+
+            // Shuffle and pick unique emojis for each slot
+            const shuffled = [...emojiPool].sort(() => Math.random() - 0.5);
+            allSlots.forEach((slot, i) => {
+                slot.textContent = shuffled[i % shuffled.length];
+            });
+        }
+
+        randomizeEmojis();
+
+        // Pick random sayings on page load
+        let currentSaying = null;
+
+
+        function getUKTime() {
+            return new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/London' }));
+        }
+
+        function updateCountdown() {
+            const now = getUKTime();
+            const difference = targetDate - now;
+
+            // Calculate progress
+            const elapsed = now - startDate;
+            let progressPercent = (elapsed / totalDuration) * 100;
+            progressPercent = Math.max(0, Math.min(100, progressPercent));
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+            if (difference <= 0) {
+                // Countdown complete!
+                document.getElementById('main-container').classList.add('completed');
+                document.getElementById('countdown').innerHTML = `
+                    <div class="celebration">🎉🦘🇦🇺🎉</div>
+                `;
+                document.querySelector('.header h1').textContent = "THEY'RE HERE!";
+                document.getElementById('subtitle').textContent = "No worries, the oldies have landed! Welcome to Straya! 🍻🦘";
+                document.getElementById('progress-fill').style.width = '100%';
+                return;
+            }
+
+            // Calculate time units
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            // Update display
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+            // Update subtitle with random saying (only set once on load)
+            const subtitleEl = document.getElementById('subtitle');
+            let category;
+            if (days > 30) {
+                category = 'over30';
+            } else if (days > 14) {
+                category = 'over14';
+            } else if (days > 7) {
+                category = 'over7';
+            } else if (days > 1) {
+                category = 'over1';
+            } else {
+                category = 'tomorrow';
+            }
+
+            if (currentSaying === null) {
+                currentSaying = getRandomSaying(category);
+                subtitleEl.textContent = currentSaying;
+            }
+        }
+
+        // Initial update
+        updateCountdown();
+
+        // Update every second
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
