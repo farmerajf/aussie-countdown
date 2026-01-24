@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Image</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #87CEEB 0%, #00CED1 25%, #F4D03F 60%, #E07830 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .emojis-top {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            font-size: 4rem;
+        }
+
+        .emojis-bottom {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            font-size: 4rem;
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            color: #fff;
+            text-shadow: 4px 4px 0 #CD5C5C, 6px 6px 0 rgba(0,0,0,0.2);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 2.5rem;
+            color: #fff;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+        }
+
+        .date {
+            font-size: 2rem;
+            color: #fff;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            margin-top: 25px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 30px;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="emojis-top">
+        <span>🦘</span>
+        <span>🐨</span>
+        <span>🇦🇺</span>
+        <span>☀️</span>
+        <span>🏖️</span>
+    </div>
+
+    <h1>Mum & Rob's<br>Australian Holiday</h1>
+    <p class="subtitle">G'day! The countdown is on!</p>
+    <p class="date">23rd February 2026</p>
+
+    <div class="emojis-bottom">
+        <span>🍺</span>
+        <span>🏄</span>
+        <span>🦈</span>
+        <span>🌴</span>
+        <span>🐊</span>
+    </div>
+</body>
+</html>
